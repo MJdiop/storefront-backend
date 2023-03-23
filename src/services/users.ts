@@ -13,6 +13,29 @@ const hashPassword = (password?: string) => {
   return hashedPassword
 }
 
+const authenticateUser = async (email: string, password: string): Promise<UserType | null> => {
+  try {
+    const connection = await client.connect()
+    const sql = 'SELECT password FROM users WHERE email=($1)'
+    const result = await connection.query(sql, [email])
+
+    if (result.rows.length) {
+      const user = result.rows[0]
+      if (bcrypt.compareSync(`${password} ${process.env.BCRYPT_PASSWORD}`, user.password)) {
+        const userInfo = await connection.query('SELECT id, email, username, firstname, lastname FROM users WHERE email=($1)', [email])
+
+        return userInfo.rows[0]
+      }
+    }
+
+    connection.release()
+    return null
+
+  } catch (error) {
+    throw new Error(`Error when authenticating user error: ${(error as Error).message}`)
+  }
+}
+
 const createUser = async (user: UserType): Promise<UserType> => {
   try {
     const connection = await client.connect()
@@ -105,4 +128,4 @@ const deleteUser = async (id: number): Promise<UserType> => {
   }
 }
 
-export { createUser, getAllUsers, getUser, updateUser, deleteUser }
+export { authenticateUser, createUser, getAllUsers, getUser, updateUser, deleteUser }
