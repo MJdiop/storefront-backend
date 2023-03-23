@@ -13,11 +13,76 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const supertest_1 = __importDefault(require("supertest"));
+const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const index_1 = __importDefault(require("../index"));
+const dotenv_1 = __importDefault(require("dotenv"));
+const users_1 = require("../services/users");
+dotenv_1.default.config();
 const request = (0, supertest_1.default)(index_1.default);
-describe('Test GET / endpoint', () => {
-    it('should return 200 OK', () => __awaiter(void 0, void 0, void 0, function* () {
-        const response = yield request.get('/');
-        expect(response.status).toBe(200);
+describe('Test users', () => {
+    let token;
+    beforeAll(() => __awaiter(void 0, void 0, void 0, function* () {
+        const user = yield (0, users_1.authenticateUser)('diopmbayejacques@gmail.com', 'passer123');
+        token = jsonwebtoken_1.default.sign({ user }, process.env.TOKEN_SECRET);
     }));
+    describe('get All Users', () => {
+        it('should be returned all users with a status 200 if user is authenticated with a token', () => __awaiter(void 0, void 0, void 0, function* () {
+            yield request
+                .get('/api/users')
+                .set('Authorization', `Bearer ${token}`)
+                .expect(200);
+        }));
+    });
+    describe('GET User', () => {
+        it('should be returned user with a status 200 if user is authenticated with a token', () => __awaiter(void 0, void 0, void 0, function* () {
+            yield request
+                .get('/api/users/1')
+                .set('Authorization', `Bearer ${token}`)
+                .expect(200);
+        }));
+    });
+    describe('POST Create User', () => {
+        it('should be created if user', () => __awaiter(void 0, void 0, void 0, function* () {
+            const user = yield request
+                .post('/api/users')
+                .set('Authorization', `Bearer ${token}`)
+                .send({
+                email: 'mbaye212@test.com',
+                userName: 'mbaye baba',
+                firstName: 'baba',
+                lastName: 'test test',
+                password: 'paseer123',
+            });
+            if (user.body.status !== 409) {
+                expect(user.status).toBe(201);
+            }
+        }));
+    });
+    describe('patch Update User', () => {
+        it('should be updated if user is authenticated with a token', () => __awaiter(void 0, void 0, void 0, function* () {
+            const res = yield request
+                .patch('/api/users/1')
+                .set('Authorization', `Bearer ${token}`)
+                .send({
+                email: 'mbaye2132@test.com',
+                userName: 'mbaye baba',
+                firstName: 'baba',
+                lastName: 'test test',
+                password: 'passer1234'
+            });
+            if (res.body.status !== 409) {
+                expect(res.status).toBe(200);
+            }
+        }));
+    });
+    describe('delete User', () => {
+        it('should be deleted if user is authenticated with a token', () => __awaiter(void 0, void 0, void 0, function* () {
+            const res = yield request
+                .delete('/api/users/12')
+                .set('Authorization', `Bearer ${token}`);
+            if (res.body.status !== 409) {
+                expect(res.status).toBe(200);
+            }
+        }));
+    });
 });
