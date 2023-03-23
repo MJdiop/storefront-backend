@@ -1,5 +1,17 @@
+import bcrypt from 'bcrypt'
+import doteenv from 'dotenv'
+
+doteenv.config()
+
 import client from '../database'
 import { UserType } from '../models/user'
+
+const hashPassword = (password?: string) => {
+  const salt = parseInt(process.env.SALT_ROUNDS as string, 10)
+  const hashedPassword = bcrypt.hashSync(`${password} ${process.env.BCRYPT_PASSWORD}`, salt)
+
+  return hashedPassword
+}
 
 const createUser = async (user: UserType): Promise<UserType> => {
   try {
@@ -10,7 +22,7 @@ const createUser = async (user: UserType): Promise<UserType> => {
       user.userName,
       user.firstName,
       user.lastName,
-      user.password,
+      hashPassword(user.password)
     ])
 
     connection.release()
@@ -67,7 +79,7 @@ const updateUser = async (id: number, user: UserType): Promise<UserType> => {
       user.userName,
       user.firstName,
       user.lastName,
-      user.password,
+      hashPassword(user.password),
       id,
     ])
 
