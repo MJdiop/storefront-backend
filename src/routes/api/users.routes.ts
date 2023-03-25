@@ -4,7 +4,7 @@ import { authenticateToken } from '../../middleware/authentication.middleware'
 
 const router = Router()
 
-router.post('/login', authenticateToken, loginCtlr)
+router.post('/login', loginCtlr)
 
 router.post('/', authenticateToken, createUsersCtlr)
 router.get('/', getUsersCtlr)

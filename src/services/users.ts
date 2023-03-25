@@ -80,7 +80,7 @@ const getUser = async (id: number): Promise<UserType> => {
   try {
     const connection = await client.connect()
     const sql = 'SELECT * FROM users WHERE id=($1)'
-    const result = connection.query(sql, [id])
+    const result = await connection.query(sql, [id])
 
     connection.release()
     return (await result).rows[0]
