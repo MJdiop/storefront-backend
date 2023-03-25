@@ -19,12 +19,12 @@ const createOrderProduct = async (orderProduct: OrderProduct): Promise<OrderProd
   try {
     const connection = await client.connect()
     let sql = 'SELECT * FROM orders WHERE id=($1)'
-    let result = await connection.query(sql, [orderProduct.orderId])
+    let result = await connection.query(sql, [orderProduct.id])
 
-    if (result.rows.length && result.rows[0].order_status === 'active') {
+    if (result.rows.length && result.rows[0].status === 'active') {
       sql = 'INSERT INTO order_products (order_id, product_id, quantity) VALUES ($1, $2, $3) RETURNING *'
       result = await connection.query(sql, [
-        orderProduct.orderId,
+        orderProduct.id,
         orderProduct.productId,
         orderProduct.quantity
       ])
@@ -53,7 +53,7 @@ const getOrdersByUser = async (userId: number): Promise<Order[]> => {
   }
 }
 
-const getOrdersByUserAndStatus = async (userId: string, status: string): Promise<Order[]> => {
+const getOrdersByUserAndStatus = async (userId: number, status: string | unknown): Promise<Order[]> => {
   try {
     const connection = await client.connect()
     const sql = 'SELECT * FROM orders WHERE user_id=($1) AND status=($2)'
@@ -63,7 +63,6 @@ const getOrdersByUserAndStatus = async (userId: string, status: string): Promise
     return result.rows
   } catch (error) {
     throw new Error('Error when getting orders by user and status: ' + (error as Error).message)
-
   }
 }
 
