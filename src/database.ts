@@ -5,7 +5,7 @@ doteenv.config()
 
 const client = new Pool({
   host: process.env.HOST,
-  database: process.env.POSTGRES_DB,
+  database: process.env.NODE_ENV === 'dev' ? process.env.POSTGRES_DB : process.env.POSTGRES_DB_TEST,
   user: process.env.POSTGRES_USER,
   password: process.env.POSTGRES_PASSWORD,
   port: parseInt(process.env.POSTGRES_PORT as string, 10),

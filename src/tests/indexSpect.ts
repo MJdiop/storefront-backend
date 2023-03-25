@@ -41,7 +41,7 @@ describe('Test', () => {
         .post('/api/users')
         .set('Authorization', `Bearer ${token}`)
         .send({
-          email: 'mbaye212@test.com',
+          email: `mbaye${Math.floor(Math.random() * 10)}@test.com`,
           userName: 'mbaye baba',
           firstName: 'baba',
           lastName: 'test test',

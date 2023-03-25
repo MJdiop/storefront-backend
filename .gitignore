@@ -1,6 +1,7 @@
-node_modules/
+# dotenv environment variables file
+.env
 
+node_modules/
 dist/
 
-# dotenv environment variables file
-.env.*
+# // "test": "npm run build && jasmine",
