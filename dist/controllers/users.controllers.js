@@ -41,6 +41,9 @@ exports.getUsersCtlr = getUsersCtlr;
 const getUserCtlr = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const userId = +req.params.id;
     const user = yield (0, users_1.getUser)(userId);
+    if (!user) {
+        return res.status(404).json({ message: 'user not found ', code: 404, error: 'user not found', data: null });
+    }
     return res.status(200).json({ message: 'user successfully recovered ', code: 200, error: null, data: user });
 });
 exports.getUserCtlr = getUserCtlr;

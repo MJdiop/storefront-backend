@@ -8,12 +8,14 @@ doteenv.config()
 
 const request = supertest(app)
 
-describe('Test users', () => {
+describe('Test', () => {
   let token: string
   beforeAll(async () => {
     const user = await authenticateUser('diopmbayejacques@gmail.com', 'passer123')
     token = jwt.sign({ user }, process.env.TOKEN_SECRET as unknown as string)
   })
+
+  // Test Users
 
   describe('get All Users', () => {
     it('should be returned all users with a status 200 if user is authenticated with a token', async () => {
@@ -57,7 +59,7 @@ describe('Test users', () => {
         .patch('/api/users/1')
         .set('Authorization', `Bearer ${token}`)
         .send({
-          email: 'mbaye2132@test.com',
+          email: 'mbaye232@test.com',
           userName: 'mbaye baba',
           firstName: 'baba',
           lastName: 'test test',
@@ -79,4 +81,90 @@ describe('Test users', () => {
       }
     })
   })
+
+  // Test Products
+
+  describe('get All Products', () => {
+    it('should be returned all products with a status 200 if user is authenticated with a token', async () => {
+      await request
+        .get('/api/products')
+        .set('Authorization', `Bearer ${token}`)
+        .expect(200)
+    })
+  })
+
+  describe('GET Product', () => {
+    it('should be returned product with a status 200 if user is authenticated with a token', async () => {
+      await request
+        .get('/api/products/1')
+        .set('Authorization', `Bearer ${token}`)
+        .expect(200)
+    })
+  })
+
+  describe('POST Create Product', () => {
+    it('should be created if user is authenticated with a token', async () => {
+      const product = await request
+        .post('/api/products')
+        .set('Authorization', `Bearer ${token}`)
+        .send({
+          name: 'test',
+          price: 1000,
+          description: 'test',
+          quantity: 10,
+          category: 'test',
+        })
+      if (product.body.status !== 409) {
+        expect(product.status).toBe(201)
+      }
+    })
+  })
+
+  // Test Orders
+
+  describe('get All Orders', () => {
+    it('should be returned all orders with a status 200 if user is authenticated with a token', async () => {
+      await request
+        .get('/api/orders/1/find')
+        .set('Authorization', `Bearer ${token}`)
+        .expect(200)
+    })
+  })
+
+  describe('GET Order by status', () => {
+    it('should be returned order with a status 200 if user is authenticated with a token', async () => {
+      await request
+        .get('/api/orders/1/find-by-status?status=active')
+        .set('Authorization', `Bearer ${token}`)
+        .expect(200)
+    })
+  })
+
+  describe('POST Create Order', () => {
+    it('should be created if user is authenticated with a token', async () => {
+      const order = await request
+        .post('/api/orders/1/create')
+        .set('Authorization', `Bearer ${token}`)
+      if (order.body.status !== 409) {
+        expect(order.status).toBe(201)
+      }
+    })
+  })
+
+  describe('POST Create Order product', () => {
+    it('should be created if user is authenticated with a token', async () => {
+      const order = await request
+        .post('/api/orders/1/create-product')
+        .set('Authorization', `Bearer ${token}`)
+        .send({
+          id: 2,
+          productId: 1,
+          quantity: 20,
+        })
+      if (order.body.status !== 409) {
+        expect(order.status).toBe(201)
+      }
+    })
+  })
+
 })

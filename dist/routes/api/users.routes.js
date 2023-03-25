@@ -4,7 +4,7 @@ const express_1 = require("express");
 const users_controllers_1 = require("../../controllers/users.controllers");
 const authentication_middleware_1 = require("../../middleware/authentication.middleware");
 const router = (0, express_1.Router)();
-router.post('/login', authentication_middleware_1.authenticateToken, users_controllers_1.loginCtlr);
+router.post('/login', users_controllers_1.loginCtlr);
 router.post('/', authentication_middleware_1.authenticateToken, users_controllers_1.createUsersCtlr);
 router.get('/', users_controllers_1.getUsersCtlr);
 router.get('/:id', authentication_middleware_1.authenticateToken, users_controllers_1.getUserCtlr);
