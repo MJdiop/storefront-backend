@@ -42,9 +42,9 @@ const createUser = async (user: UserType): Promise<UserType> => {
     const sql = 'INSERT INTO users (email, username, firstname, lastname, password) VALUES ($1, $2, $3, $4, $5) RETURNING *'
     const result = await connection.query(sql, [
       user.email,
-      user.userName,
-      user.firstName,
-      user.lastName,
+      user.username,
+      user.firstname,
+      user.lastname,
       hashPassword(user.password)
     ])
 
@@ -99,9 +99,9 @@ const updateUser = async (id: number, user: UserType): Promise<UserType> => {
     const sql = 'UPDATE users SET email=($1), username=($2), firstname=($3), lastname=($4), password=($5) WHERE id=($6) RETURNING *'
     const result = await connection.query(sql, [
       user.email,
-      user.userName,
-      user.firstName,
-      user.lastName,
+      user.username,
+      user.firstname,
+      user.lastname,
       hashPassword(user.password),
       id,
     ])
