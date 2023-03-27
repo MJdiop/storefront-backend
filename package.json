@@ -9,7 +9,7 @@
     "start:dev": "nodemon -e ts --exec ts-node src/index.ts",
     "start": "npm run build && node dist/index.js",
     "build": "tsc",
-    "test": "set NODE_ENV=test && db-migrate up --env test && tsc && jasmine ",
+    "test": "export NODE_ENV=test && db-migrate up --env test && tsc && jasmine && db-migrate --env test reset ",
     "format": "prettier --write \"src/**/*.ts\"",
     "lint": "eslint \"src/**/*.ts\""
   },
